@@ -16,7 +16,7 @@ import Copyright from '../components/Copyright';
 
 class SignIn extends Component {
 
-  
+
 
   render() {
     return (
@@ -26,7 +26,7 @@ class SignIn extends Component {
         <Avatar className="avatar" style={{ margin: "1vh", backgroundColor: "#e91e63", marginTop: "90px", marginLeft: "45%"}}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="h5" style={{marginTop: "10px", marginBottom: "10px"}}>
           Sign in
         </Typography>
         <form className="form" noValidate>
