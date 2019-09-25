@@ -8,8 +8,63 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Copyright from '../components/Copyright';
+import { validatePass } from '../components/Validators';
 
-class ResetPass extends Component {
+interface MyProps {
+  password: string;
+  newPassword: string;
+}
+
+interface MyState {
+  password: string;
+  newPassword: string;
+  errPass: boolean;
+  errNewPass: boolean;
+}
+
+class ResetPass extends Component<MyProps, MyState> {
+
+  constructor( props: MyProps ){
+    super( props );
+ 
+    this.state = {
+      password: "", 
+      newPassword: "",
+      errPass: false,
+      errNewPass: false
+    }
+
+    this.handleChange = this.handleChange.bind(this);
+
+  }
+
+  handleChange(e: React.FormEvent<any>){
+    const { name, value } = e.currentTarget;
+
+    this.setState({
+      [name]: value
+    } as Pick<MyState, keyof MyState>, () => {
+
+      if (!validatePass(this.state.password)){
+        this.setState({errPass: true});
+      }else{
+        this.setState({errPass: false});
+      }
+
+      if (!validatePass(this.state.newPassword)){
+        this.setState({errNewPass: true});
+      }else{
+        this.setState({errNewPass: false});
+      }
+
+      if (this.state.password !== this.state.newPassword){
+        this.setState({errNewPass: true});
+      }else{
+        this.setState({errNewPass: false});
+      }
+    });
+
+  }
 
   render(){
     return (
@@ -28,22 +83,28 @@ class ResetPass extends Component {
               margin="normal"
               required
               fullWidth
-              name="current-pass"
+              name="password"
               label="Current Password"
               type="password"
               id="current-pass"
               autoComplete="current-password"
+              error={this.state.errPass}
+              value={this.state.password}
+              onChange={this.handleChange}
             />
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              name="new-pass"
+              name="newPassword"
               label="New Password"
               type="password"
               id="new-pass"
               autoComplete="current-password"
+              error={this.state.errNewPass}
+              value={this.state.newPassword}
+              onChange={this.handleChange}
             />
             <Button
               type="submit"

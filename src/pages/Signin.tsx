@@ -13,11 +13,57 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { Link } from 'react-router-dom';
 import Copyright from '../components/Copyright';
+import { validatePass, validateEmail } from '../components/Validators';
 
-class SignIn extends Component {
+interface MyProps {
+  email: string;
+  password: string;
+}
 
+interface MyState {
+  email: string;
+  password: string;
+  errPass: boolean;
+  errEmail: boolean;
+}
 
+class SignIn extends Component<MyProps, MyState> {
 
+  constructor( props: MyProps ){
+    super( props );
+ 
+    this.state = {
+      email: "",
+      password: "", 
+      errPass: false,
+      errEmail: false
+    }
+
+    this.handleChange = this.handleChange.bind(this);
+
+  }
+
+  handleChange(e: React.FormEvent<any>){
+    const { name, value } = e.currentTarget;
+
+    this.setState({
+      [name]: value
+    } as Pick<MyState, keyof MyState>, () => {
+
+      if (!validatePass(this.state.password)){
+        this.setState({errPass: true});
+      }else{
+        this.setState({errPass: false});
+      }
+
+      if (!validateEmail(this.state.email)){
+        this.setState({errEmail: true});
+      }else{
+        this.setState({errEmail: false});
+      }
+    });
+
+  }
   render() {
     return (
     <Container component="main" maxWidth="xs">
@@ -40,6 +86,9 @@ class SignIn extends Component {
             name="email"
             autoComplete="email"
             autoFocus
+            error={this.state.errEmail}
+            value={this.state.email}
+            onChange={this.handleChange}
           />
           <TextField
             variant="outlined"
@@ -51,6 +100,9 @@ class SignIn extends Component {
             type="password"
             id="password"
             autoComplete="current-password"
+            error={this.state.errPass}
+            value={this.state.password}
+            onChange={this.handleChange}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}

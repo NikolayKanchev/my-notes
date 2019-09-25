@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Copyright from '../components/Copyright';
+import { validateEmail, validatePass, validateName } from '../components/Validators';
 
 interface MyProps {
   firstName: string;
@@ -22,34 +23,20 @@ interface MyProps {
 }
 
 interface MyState {
-  firstName: "";
-  lastName: "";
-  email: "";
-  password: "";
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
   errFN: boolean,
   errLN: boolean,
   errEmail: boolean,
   errPass: boolean
 }
 
-function validateEmail(email: string) {
-  var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(email);
-}
-
-function valivatePass(password: string) {
-  var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
-  return re.test(password);
-}
-
-function valivateName(name: string){
-  return name.length > 3; 
-}
-
 class SignUp extends Component<MyProps, MyState>{
   constructor( props: MyProps ){
     super( props );
- 
+
     this.state = {
       firstName: "",
       lastName: "",
@@ -71,25 +58,26 @@ class SignUp extends Component<MyProps, MyState>{
     this.setState({
       [name]: value
     } as Pick<MyState, keyof MyState>, () => {
+
       if (!validateEmail(this.state.email)){
         this.setState({errEmail: true});
       }else{
         this.setState({errEmail: false});
       }
 
-      if (!valivateName(this.state.firstName)){
+      if (!validateName(this.state.firstName)){
         this.setState({errFN: true});
       }else{
         this.setState({errFN: false});
       }
 
-      if (!valivateName(this.state.lastName)){
+      if (!validateName(this.state.lastName)){
         this.setState({errLN: true});
       }else{
         this.setState({errLN: false});
       }
 
-      if (!valivatePass(this.state.password)){
+      if (!validatePass(this.state.password)){
         this.setState({errPass: true});
       }else{
         this.setState({errPass: false});
