@@ -23,7 +23,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function ButtonAppBar() {
+interface MyProps {
+  logoutUser: (event: React.FormEvent<any>) => void;
+}
+
+export default function ButtonAppBar(props: MyProps) {
   const classes = useStyles();
 
   return (
@@ -34,9 +38,10 @@ export default function ButtonAppBar() {
                 <MenuIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
-                News
+              <Link style={{textDecoration: 'none', color: 'inherit'}} to="/">My-Notes</Link>
             </Typography>
-            <Button color="inherit"><Link style={{textDecoration: 'none', color: 'inherit'}} to="/signin">Login</Link></Button>
+            {/* <Button color="inherit"><Link style={{textDecoration: 'none', color: 'inherit'}} to="/signin">Login</Link></Button> */}
+            <Button color="inherit" onClick={e => props.logoutUser(e)}>Logout</Button>
         </Toolbar>
       </AppBar>
     </div>

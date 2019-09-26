@@ -14,12 +14,11 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Copyright from '../components/Copyright';
 import { validateEmail, validatePass, validateName } from '../components/Validators';
-
+import firebase from 'firebase';
+import ErrorMessage from '../components/ErrorMessage';
+ 
 interface MyProps {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
+  registerUser(firstName: string): void;
 }
 
 interface MyState {
@@ -30,7 +29,8 @@ interface MyState {
   errFN: boolean,
   errLN: boolean,
   errEmail: boolean,
-  errPass: boolean
+  errPass: boolean,
+  errorMessage: string,
 }
 
 class SignUp extends Component<MyProps, MyState>{
@@ -45,12 +45,41 @@ class SignUp extends Component<MyProps, MyState>{
       errFN: false,
       errLN: false,
       errEmail: false,
-      errPass: false
+      errPass: false,
+      errorMessage: "",
     }
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
 
   }
+
+  handleSubmit(e: React.FormEvent<any>){
+
+    const registrationInfo = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      email: this.state.email,
+      password: this.state.password,
+    }
+
+    e.preventDefault();
+    firebase.auth().createUserWithEmailAndPassword(
+      registrationInfo.email,
+      registrationInfo.password
+    )
+    .then(() => {
+      this.props.registerUser(registrationInfo.firstName);
+    })
+    .catch((err: { message: any; }) => {
+      if(err.message !== null){
+        this.setState({errorMessage: err.message});        
+      }else{
+        this.setState({errorMessage: ""});
+      }
+    })
+  }
+
 
   handleChange(e: React.FormEvent<any>){
     const { name, value } = e.currentTarget;
@@ -83,21 +112,21 @@ class SignUp extends Component<MyProps, MyState>{
         this.setState({errPass: false});
       }
     });
-
-  }
+  } 
 
   render() {
     return (
+      <>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className="paper">
-          <Avatar className="avatar" style={{ margin: "1vh", backgroundColor: "#e91e63", marginTop: "90px", marginLeft: "45%"}}>
+          <Avatar className="avatar" style={{ margin: "1vh", backgroundColor: "#e91e63", marginTop: "65px", marginLeft: "45%"}}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5" style={{marginTop: "10px", marginBottom: "20px"}}>
             Sign up
           </Typography>
-          <form className="form" noValidate>
+          <form className="form" onSubmit={this.handleSubmit} noValidate>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -184,9 +213,14 @@ class SignUp extends Component<MyProps, MyState>{
           </form>
         </div>
         <Box mt={5}>
+          { this.state.errorMessage !== "" ? 
+            (<ErrorMessage message={this.state.errorMessage}/>) :
+            (<div style={{height: "30px"}}/>)
+          }
           <Copyright />
         </Box>
       </Container>
+      </>
     );
   }
 }
