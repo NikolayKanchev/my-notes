@@ -8,18 +8,17 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Copyright from '../components/Copyright';
-import { validatePass } from '../components/Validators';
+import Message from '../components/Message';
+import { validateEmail } from '../components/Validators';
 
 interface MyProps {
-  password: string;
-  newPassword: string;
+
 }
 
 interface MyState {
-  password: string;
-  newPassword: string;
-  errPass: boolean;
-  errNewPass: boolean;
+  email: string;
+  errEmail: boolean;
+  errorMessage: string;
 }
 
 class ResetPass extends Component<MyProps, MyState> {
@@ -28,14 +27,19 @@ class ResetPass extends Component<MyProps, MyState> {
     super( props );
  
     this.state = {
-      password: "", 
-      newPassword: "",
-      errPass: false,
-      errNewPass: false
+      email: "",
+      errEmail: false,
+      errorMessage: "",
     }
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
 
+  }
+
+  handleSubmit(e: React.FormEvent<any>){
+    e.preventDefault();
+    // let email = this.state.email;
   }
 
   handleChange(e: React.FormEvent<any>){
@@ -45,29 +49,17 @@ class ResetPass extends Component<MyProps, MyState> {
       [name]: value
     } as Pick<MyState, keyof MyState>, () => {
 
-      if (!validatePass(this.state.password)){
-        this.setState({errPass: true});
+      if (!validateEmail(this.state.email)){
+        this.setState({errEmail: true});
       }else{
-        this.setState({errPass: false});
-      }
-
-      if (!validatePass(this.state.newPassword)){
-        this.setState({errNewPass: true});
-      }else{
-        this.setState({errNewPass: false});
-      }
-
-      if (this.state.password !== this.state.newPassword){
-        this.setState({errNewPass: true});
-      }else{
-        this.setState({errNewPass: false});
+        this.setState({errEmail: false});
       }
     });
-
   }
 
   render(){
     return (
+      <>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className="paper">
@@ -77,35 +69,21 @@ class ResetPass extends Component<MyProps, MyState> {
           <Typography component="h1" variant="h5" style={{marginTop: "20px", marginBottom: "20px"}}>
             Reset Your Password
           </Typography>
-          <form className="form" noValidate>
+          <form className="form" onSubmit={this.handleSubmit} noValidate>
             <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Current Password"
-              type="password"
-              id="current-pass"
-              autoComplete="current-password"
-              error={this.state.errPass}
-              value={this.state.password}
-              onChange={this.handleChange}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="newPassword"
-              label="New Password"
-              type="password"
-              id="new-pass"
-              autoComplete="current-password"
-              error={this.state.errNewPass}
-              value={this.state.newPassword}
-              onChange={this.handleChange}
-            />
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            error={this.state.errEmail}
+            value={this.state.email}
+            onChange={this.handleChange}
+          />
             <Button
               type="submit"
               fullWidth
@@ -118,10 +96,18 @@ class ResetPass extends Component<MyProps, MyState> {
             </Button>
           </form>
         </div>
-        <Box mt={8}>
-          <Copyright />
-        </Box>
       </Container>
+
+      <Container component="main" maxWidth="sm">
+      <Box mt={25}>
+        { this.state.errorMessage !== "" ?
+          (<Message message={this.state.errorMessage} variant="error"/>) :
+          (<div style={{height: "30px"}}/>)
+        }
+      <Copyright />
+    </Box>
+    </Container>
+    </>
     );
   }
 }

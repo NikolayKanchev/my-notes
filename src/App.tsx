@@ -31,11 +31,12 @@ class App extends Component<{}, MyState> {
 
   componentDidMount(){
     firebase.auth().onAuthStateChanged((FBUser: any) => {
-      if (FBUser){
+      if (FBUser){        
         this.setState({
           user: FBUser,
           displayName: FBUser.displayName,
-          userId: FBUser.uid
+          userId: FBUser.uid,
+          redirectTo: "/"
         });
       }
     });
@@ -43,7 +44,6 @@ class App extends Component<{}, MyState> {
 
   registerUser = (displayName: string) => {
     firebase.auth().onAuthStateChanged((FBUser: any) => {
-      // console.log(FBUser);
       FBUser.updateProfile({
         displayName: displayName
 
@@ -77,13 +77,13 @@ class App extends Component<{}, MyState> {
     return (
       <div className="App">
         <BrowserRouter >
-          <AppBar logoutUser={this.logoutUser}/>
+          <AppBar loggedInUser={this.state.displayName} logoutUser={this.logoutUser}/>
           <Switch>
             <div className="App">
                 <Route path="/" render={(props) => <Home {...props} userName={this.state.displayName} />} exact />
-                <Route path="/signin" component={Signin} exact />
-                <Route path="/reset-pass" component={ResetPass} exact />
-                <Route path="/register" render={(props) => <Register registerUser={this.registerUser} />}/>
+                <Route path="/signin" component={Signin} />
+                <Route path="/reset-pass" component={ResetPass} />
+                <Route path="/register" render={() => <Register registerUser={this.registerUser} />}/>
                 { this.state.redirectTo !== "" ? <Redirect to={this.state.redirectTo} />: null }
             </div>
           </Switch>

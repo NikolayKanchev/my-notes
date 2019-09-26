@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface MyProps {
   logoutUser: (event: React.FormEvent<any>) => void;
+  loggedInUser: string;
 }
 
 export default function ButtonAppBar(props: MyProps) {
@@ -40,8 +41,12 @@ export default function ButtonAppBar(props: MyProps) {
             <Typography variant="h6" className={classes.title}>
               <Link style={{textDecoration: 'none', color: 'inherit'}} to="/">My-Notes</Link>
             </Typography>
-            {/* <Button color="inherit"><Link style={{textDecoration: 'none', color: 'inherit'}} to="/signin">Login</Link></Button> */}
+
+            {
+            props.loggedInUser === "" ? 
+            <Button color="inherit"><Link style={{textDecoration: 'none', color: 'inherit'}} to="/signin">Login</Link></Button> :
             <Button color="inherit" onClick={e => props.logoutUser(e)}>Logout</Button>
+            }
         </Toolbar>
       </AppBar>
     </div>

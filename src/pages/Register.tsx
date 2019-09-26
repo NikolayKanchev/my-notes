@@ -14,8 +14,8 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Copyright from '../components/Copyright';
 import { validateEmail, validatePass, validateName } from '../components/Validators';
-import firebase from 'firebase';
-import ErrorMessage from '../components/ErrorMessage';
+import firebase from '../Firebase';
+import Message from '../components/Message';
  
 interface MyProps {
   registerUser(firstName: string): void;
@@ -212,9 +212,12 @@ class SignUp extends Component<MyProps, MyState>{
             </Grid>
           </form>
         </div>
-        <Box mt={5}>
+      </Container>
+
+      <Container component="main" maxWidth="sm">
+        <Box mt={6}>
           { this.state.errorMessage !== "" ? 
-            (<ErrorMessage message={this.state.errorMessage}/>) :
+            (<Message message={this.state.errorMessage} variant="error"/>) :
             (<div style={{height: "30px"}}/>)
           }
           <Copyright />

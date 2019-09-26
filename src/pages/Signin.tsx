@@ -13,11 +13,12 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { Link } from 'react-router-dom';
 import Copyright from '../components/Copyright';
+import Message from '../components/Message';
 import { validatePass, validateEmail } from '../components/Validators';
+import firebase from '../Firebase';
 
 interface MyProps {
-  email: string;
-  password: string;
+  onLogin(): void;
 }
 
 interface MyState {
@@ -25,6 +26,7 @@ interface MyState {
   password: string;
   errPass: boolean;
   errEmail: boolean;
+  errorMessage: string;
 }
 
 class SignIn extends Component<MyProps, MyState> {
@@ -36,12 +38,37 @@ class SignIn extends Component<MyProps, MyState> {
       email: "",
       password: "", 
       errPass: false,
-      errEmail: false
+      errEmail: false,
+      errorMessage: "",
     }
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
 
   }
+
+  handleSubmit(e: React.FormEvent<any>){
+
+    const registrationInfo = {
+      email: this.state.email,
+      password: this.state.password,
+    }
+
+    e.preventDefault();
+    firebase.auth().signInWithEmailAndPassword(
+      registrationInfo.email,
+      registrationInfo.password
+    )
+    .catch((err: { message: any; }) => {
+      if(err.message !== null){
+        this.setState({errorMessage: err.message});
+                
+      }else{
+        this.setState({errorMessage: ""});
+      }
+    })
+  }
+
 
   handleChange(e: React.FormEvent<any>){
     const { name, value } = e.currentTarget;
@@ -66,6 +93,7 @@ class SignIn extends Component<MyProps, MyState> {
   }
   render() {
     return (
+    <>
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className="paper">
@@ -75,7 +103,7 @@ class SignIn extends Component<MyProps, MyState> {
         <Typography component="h1" variant="h5" style={{marginTop: "10px", marginBottom: "10px"}}>
           Sign in
         </Typography>
-        <form className="form" noValidate>
+        <form className="form" onSubmit={this.handleSubmit} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -132,10 +160,18 @@ class SignIn extends Component<MyProps, MyState> {
           </Grid>
         </form>
       </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
+      
     </Container>
+    <Container component="main" maxWidth="sm">
+    <Box mt={8}>
+      { this.state.errorMessage !== "" ? 
+        (<Message message={this.state.errorMessage} variant="error"/>) :
+        (<div style={{height: "30px"}}/>)
+      }
+    <Copyright />
+  </Box>
+  </Container>
+  </>
   )}
 }
 
