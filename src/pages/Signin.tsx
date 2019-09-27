@@ -5,7 +5,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import MatLink from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -18,7 +17,7 @@ import { validatePass, validateEmail } from '../components/Validators';
 import firebase from '../Firebase';
 
 interface MyProps {
-  onLogin(): void;
+  history: any;
 }
 
 interface MyState {
@@ -59,6 +58,9 @@ class SignIn extends Component<MyProps, MyState> {
       registrationInfo.email,
       registrationInfo.password
     )
+    .then(() =>{
+      this.props.history.push("/")
+    })
     .catch((err: { message: any; }) => {
       if(err.message !== null){
         this.setState({errorMessage: err.message});
@@ -148,14 +150,10 @@ class SignIn extends Component<MyProps, MyState> {
           </Button>
           <Grid container style={{ marginTop: '10px'}}>
             <Grid item xs style={{textAlign: 'left'}}>
-              <MatLink href="" variant="body2">
                 <Link to="/reset-pass" style={{textDecoration: 'none', color: 'inherit'}}>Forgot password?</Link>
-              </MatLink>
             </Grid>
             <Grid item>
-              <MatLink href="#" variant="body2">
                 <Link to="/register" style={{textDecoration: 'none', color: 'inherit'}}>{"Don't have an account? Sign Up"}</Link>
-              </MatLink>
             </Grid>
           </Grid>
         </form>

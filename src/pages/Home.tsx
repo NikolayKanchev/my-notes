@@ -1,8 +1,15 @@
 import React from 'react';
+import Container from '@material-ui/core/Container';
+
 
 const home = (prop:{userName: string}) => {
     return(
-        <h1>{prop.userName}</h1>
+        <>
+            <Container style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", marginTop: "20px" }} component="main" maxWidth="lg">
+
+                
+            </Container>
+        </>
     )
 }
 

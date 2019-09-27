@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import firebase from './Firebase';
+import history from './utils/History';
 
 import './App.css';
 
@@ -9,12 +10,12 @@ import Home from './pages/Home';
 import Signin from './pages/Signin';
 import ResetPass from './pages/ResetPass';
 import Register from './pages/Register';
+import NotFound from './pages/NotFound';
 
 export interface MyState{
   user: any,
   displayName: string,
   userId: string,
-  redirectTo: string
 }
 
 class App extends Component<{}, MyState> {
@@ -24,8 +25,7 @@ class App extends Component<{}, MyState> {
     this.state = {
       user: null,
       displayName: "",
-      userId: "",
-      redirectTo: ""
+      userId: ""
     }
   } 
 
@@ -36,7 +36,6 @@ class App extends Component<{}, MyState> {
           user: FBUser,
           displayName: FBUser.displayName,
           userId: FBUser.uid,
-          redirectTo: "/"
         });
       }
     });
@@ -47,15 +46,13 @@ class App extends Component<{}, MyState> {
       FBUser.updateProfile({
         displayName: displayName
 
-      }).then(() => {
-        console.log(FBUser);
-        
+      }).then(() => {        
         this.setState({
           user: FBUser,
           displayName: FBUser.displayName,
           userId: FBUser.uid
         });
-        this.setState({ redirectTo: "/" });
+        history.push("/");
       })
     })
   }
@@ -69,25 +66,29 @@ class App extends Component<{}, MyState> {
     });
 
     firebase.auth().signOut().then(() => {
-      this.setState({ redirectTo: "/signin" });
+      history.push("/signin");
     })
   }
 
   render(){
+    const { displayName } = this.state;
+
     return (
       <div className="App">
-        <BrowserRouter >
-          <AppBar loggedInUser={this.state.displayName} logoutUser={this.logoutUser}/>
+        <Router history={history}>
+          <AppBar loggedInUser={displayName} logoutUser={this.logoutUser}/>
           <Switch>
-            <div className="App">
-                <Route path="/" render={(props) => <Home {...props} userName={this.state.displayName} />} exact />
-                <Route path="/signin" component={Signin} />
+              <Route path="/" render={() => <Home userName={displayName} />} exact/>
+              {/* <Route path="/" render={() => <Home />} exact/> */}
+
+              { !this.state.user ? (<>
+                <Route path="/signin" render={() => <Signin history={history} />} />
                 <Route path="/reset-pass" component={ResetPass} />
                 <Route path="/register" render={() => <Register registerUser={this.registerUser} />}/>
-                { this.state.redirectTo !== "" ? <Redirect to={this.state.redirectTo} />: null }
-            </div>
+              </>):null }
+              <Route component={ NotFound } />
           </Switch>
-        </BrowserRouter>
+        </Router>
       </div>
     );
   }
