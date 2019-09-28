@@ -11,7 +11,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { Link } from 'react-router-dom';
-import Copyright from '../components/Copyright';
 import Message from '../components/Message';
 import { validatePass, validateEmail } from '../components/Validators';
 import firebase from '../Firebase';
@@ -163,10 +162,8 @@ class SignIn extends Component<MyProps, MyState> {
     <Container component="main" maxWidth="sm">
     <Box mt={8}>
       { this.state.errorMessage !== "" ? 
-        (<Message message={this.state.errorMessage} variant="error"/>) :
-        (<div style={{height: "30px"}}/>)
+        (<Message message={this.state.errorMessage} variant="error"/>) : null
       }
-    <Copyright />
   </Box>
   </Container>
   </>

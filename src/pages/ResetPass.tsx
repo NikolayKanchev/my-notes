@@ -7,7 +7,6 @@ import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Copyright from '../components/Copyright';
 import Message from '../components/Message';
 import { validateEmail } from '../components/Validators';
 
@@ -101,10 +100,8 @@ class ResetPass extends Component<MyProps, MyState> {
       <Container component="main" maxWidth="sm">
       <Box mt={25}>
         { this.state.errorMessage !== "" ?
-          (<Message message={this.state.errorMessage} variant="error"/>) :
-          (<div style={{height: "30px"}}/>)
+          (<Message message={this.state.errorMessage} variant="error"/>) : null
         }
-      <Copyright />
     </Box>
     </Container>
     </>

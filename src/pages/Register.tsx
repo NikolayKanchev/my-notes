@@ -11,7 +11,6 @@ import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Copyright from '../components/Copyright';
 import { validateEmail, validatePass, validateName } from '../components/Validators';
 import firebase from '../Firebase';
 import Message from '../components/Message';
@@ -214,10 +213,8 @@ class SignUp extends Component<MyProps, MyState>{
       <Container component="main" maxWidth="sm">
         <Box mt={6}>
           { this.state.errorMessage !== "" ? 
-            (<Message message={this.state.errorMessage} variant="error"/>) :
-            (<div style={{height: "30px"}}/>)
+            (<Message message={this.state.errorMessage} variant="error"/>) : null
           }
-          <Copyright />
         </Box>
       </Container>
       </>

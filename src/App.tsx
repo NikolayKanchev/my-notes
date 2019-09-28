@@ -4,6 +4,9 @@ import firebase from './Firebase';
 import history from './utils/History';
 
 import './App.css';
+import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
+
 
 import AppBar from './components/AppBar';
 import Home from './pages/Home';
@@ -11,6 +14,10 @@ import Signin from './pages/Signin';
 import ResetPass from './pages/ResetPass';
 import Register from './pages/Register';
 import NotFound from './pages/NotFound';
+import AddNote from './pages/AddNote';
+import Copyright from './components/Copyright';
+
+
 
 export interface MyState{
   user: any,
@@ -76,18 +83,26 @@ class App extends Component<{}, MyState> {
     return (
       <div className="App">
         <Router history={history}>
-          <AppBar loggedInUser={displayName} logoutUser={this.logoutUser}/>
-          <Switch>
-              <Route path="/" render={() => <Home userName={displayName} />} exact/>
-              {/* <Route path="/" render={() => <Home />} exact/> */}
+          <div className="Main">
+            <AppBar loggedInUser={displayName} logoutUser={this.logoutUser}/>
+            <Switch>
+                <Route path="/" render={() => <Home userName={displayName} />} exact/>
+                <Route path="/add-note" render={() => <AddNote  />}/>
+                <Route path="/add-note" />
+                { !this.state.user ? (<>
+                  <Route path="/signin" render={() => <Signin history={history} />} />
+                  <Route path="/reset-pass" component={ResetPass} />
+                  <Route path="/register" render={() => <Register registerUser={this.registerUser} />}/>
+                </>):null }
 
-              { !this.state.user ? (<>
-                <Route path="/signin" render={() => <Signin history={history} />} />
-                <Route path="/reset-pass" component={ResetPass} />
-                <Route path="/register" render={() => <Register registerUser={this.registerUser} />}/>
-              </>):null }
-              <Route component={ NotFound } />
-          </Switch>
+                <Route component={ NotFound } />
+            </Switch>
+          </div>
+          <Container component="main" maxWidth="sm">
+            <Box mt={8}>
+                <Copyright />
+            </Box>
+          </Container>
         </Router>
       </div>
     );
