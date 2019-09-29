@@ -1,9 +1,10 @@
 import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/auth';
+import getApiKey from './MyFirebaseKey';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAvUpz8aHpXtr0kCVYUibPGQIcmSk0FtLw",
+    apiKey: getApiKey(),
     authDomain: "my-notes-ff187.firebaseapp.com",
     databaseURL: "https://my-notes-ff187.firebaseio.com",
     projectId: "my-notes-ff187",

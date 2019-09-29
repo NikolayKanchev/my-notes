@@ -10,7 +10,7 @@ const home = (prop:{ userID: string, notes?: Array<{ noteID: string, title: stri
 
     return(
         <>
-            <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/add-note"><Button color="secondary" variant="add" /></Link>
+            <Link style={{ textDecoration: 'none', color: 'inherit', position: "absolute", top: "600px", left: "90%"}} to="/add-note"><Button color="secondary" variant="add" /></Link>
             
             <Container style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap" }} component="main" maxWidth="lg">
                 <>
@@ -25,6 +25,7 @@ const home = (prop:{ userID: string, notes?: Array<{ noteID: string, title: stri
                         })
                     ) : null
                 }
+                <div style={{ visibility: "hidden" }}><Card title={"jdsfdakfjvjadfvnknv"} text={"djkshfkajh;kjfhkjshfkajhskdfjhskfjvhkjdfkFH/KGFHA;KDJFHVKAFJDSFVHBADKFHB/KSFVBFAK/DJSFVBF/KBKJVBAKB"} noteID={"123456"} userID={prop.userID}/></div>
                 </>
 
             </Container>            
