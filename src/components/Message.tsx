@@ -89,8 +89,7 @@ export default function CustomizedSnackbars(props: CustomProps) {
 
   useEffect(() => {
     setOpen(true);
-    }, 
-    [message]
+    }, []
   );
 
   const handleClose = (event?: SyntheticEvent, reason?: string) => {

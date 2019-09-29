@@ -1,6 +1,8 @@
 import React from 'react';
 import firebase from '../Firebase';
 
+import FormDialog from '../components/FormDialog';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -42,14 +44,21 @@ const deleteNote = (e: React.FormEvent<any>, noteID: string, userID: string):voi
   const ref = firebase
     .database()
     .ref(`notes/${userID}/${noteID}`);
+
   ref.remove();
 }
 
 export default function MediaCard(props: MyProps) {
+  const [open, setOpen] = React.useState(false);
   const classes = useStyles();
   const { title, text, noteID, userID } = props;
 
+  const setOpenToFalse = (): void => {
+    setOpen(false);
+  }
+
   return (
+    <>
     <Card className={classes.card}>
       <CardActionArea>
         <CardContent>
@@ -62,7 +71,7 @@ export default function MediaCard(props: MyProps) {
         </CardContent>
       </CardActionArea>
       <CardActions className={classes.actions}>
-        <Button size="small" color="primary">
+        <Button size="small" color="primary" onClick={e => setOpen(true)}>
             <EditIcon />
         </Button>
         <Button size="small" color="primary" onClick={e => deleteNote(e, noteID, userID)}>
@@ -70,5 +79,7 @@ export default function MediaCard(props: MyProps) {
         </Button>
       </CardActions>
     </Card>
+    { open ? <FormDialog props={props} setOpenToFalse={setOpenToFalse} /> : <></>}
+    </>
   );
 }
