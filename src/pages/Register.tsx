@@ -53,6 +53,7 @@ class SignUp extends Component<MyProps, MyState>{
   }
 
   handleSubmit(e: React.FormEvent<any>){
+    e.preventDefault();
 
     const registrationInfo = {
       firstName: this.state.firstName,
@@ -61,21 +62,30 @@ class SignUp extends Component<MyProps, MyState>{
       password: this.state.password,
     }
 
-    e.preventDefault();
-    firebase.auth().createUserWithEmailAndPassword(
-      registrationInfo.email,
-      registrationInfo.password
-    )
-    .then(() => {
-      this.props.registerUser(registrationInfo.firstName);
-    })
-    .catch((err: { message: any; }) => {
-      if(err.message !== null){
-        this.setState({errorMessage: err.message});        
-      }else{
-        this.setState({errorMessage: ""});
-      }
-    })
+    if(validateName(registrationInfo.firstName) 
+        && validateName(registrationInfo.firstName) 
+        && validateEmail(registrationInfo.email) 
+        && validatePass(registrationInfo.password))
+    {
+      firebase.auth().createUserWithEmailAndPassword(
+        registrationInfo.email,
+        registrationInfo.password
+      )
+      .then(() => {
+        this.props.registerUser(registrationInfo.firstName);
+      })
+      .catch((err: { message: any; }) => {
+        if(err.message !== null){
+          this.setState({errorMessage: err.message});        
+        }else{
+          this.setState({errorMessage: ""});
+        }
+      })
+    }else{
+      this.setState({
+        errorMessage: "There is an error. Please check your input !"
+      })
+    }
   }
 
 

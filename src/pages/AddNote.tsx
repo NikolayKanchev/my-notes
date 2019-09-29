@@ -9,11 +9,14 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
 
 import { validateName } from '../components/Validators';
+import Message from '../components/Message';
+
 
 interface MyProps {
-//   history: any;
+  addNote(title: string, text: string): void
 }
 
 interface MyState {
@@ -21,6 +24,8 @@ interface MyState {
   text: string;
   errTitle: boolean;
   errText: boolean;
+  successMessage: string;
+  errorMessage: string;
 }
 
 class SignIn extends Component<MyProps, MyState> {
@@ -32,7 +37,9 @@ class SignIn extends Component<MyProps, MyState> {
       title: "",
       text: "",
       errTitle: false,
-      errText: false
+      errText: false,
+      successMessage: "",
+      errorMessage: ""
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -41,9 +48,22 @@ class SignIn extends Component<MyProps, MyState> {
   }
 
   handleSubmit(e: React.FormEvent<any>){
-
     e.preventDefault();
-    
+
+    if(this.state.title.length > 3 && this.state.text.length > 3){
+
+        this.props.addNote(this.state.title, this.state.text);
+
+        this.setState({
+            title: "",
+            text: "",
+            successMessage: "The Note was successfully saved !!!"
+        });
+    }else{
+        this.setState({
+            errorMessage: "'Title' and 'Text' should be at least 3 charecters !"
+        })
+    }
   }
 
 
@@ -84,13 +104,13 @@ class SignIn extends Component<MyProps, MyState> {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                    autoComplete="fname"
-                    name="firstName"
+                    autoComplete="title"
+                    name="title"
                     variant="outlined"
                     required
                     fullWidth
-                    id="firstName"
-                    label="First Name"
+                    id="title"
+                    label="Title"
                     autoFocus
                     error={this.state.errTitle}
                     value={this.state.title}
@@ -127,13 +147,24 @@ class SignIn extends Component<MyProps, MyState> {
 
           <Grid container justify="center" style={{ marginTop: '10px'}}>
                 <Grid item>
-                    <Link to="/home" style={{textDecoration: 'none', color: 'inherit'}}>Back To Home</Link>
+                    <Link to="/" style={{textDecoration: 'none', color: 'inherit'}}>Back To Home</Link>
                 </Grid>
            </Grid>
           
         </form>
       </div>
     </Container>
+
+    <Container component="main" maxWidth="sm">
+        <Box mt={6}>
+          { this.state.successMessage !== "" ? 
+            (<Message message={this.state.successMessage} variant="success"/>) : null
+          }
+          { this.state.errorMessage !== "" ? 
+            (<Message message={this.state.errorMessage} variant="error"/>) : null
+          }
+        </Box>
+      </Container>
   </>
   )}
 }

@@ -7,22 +7,23 @@ import './App.css';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 
-
+import Copyright from './components/Copyright';
 import AppBar from './components/AppBar';
+
 import Home from './pages/Home';
 import Signin from './pages/Signin';
 import ResetPass from './pages/ResetPass';
 import Register from './pages/Register';
 import NotFound from './pages/NotFound';
 import AddNote from './pages/AddNote';
-import Copyright from './components/Copyright';
-
+import Welcome from './pages/Welcome';
 
 
 export interface MyState{
   user: any,
-  displayName: string,
   userId: string,
+  notes: Array<{ noteID: string, title: string, text: string }>,
+  notesNum: number
 }
 
 class App extends Component<{}, MyState> {
@@ -31,8 +32,9 @@ class App extends Component<{}, MyState> {
 
     this.state = {
       user: null,
-      displayName: "",
-      userId: ""
+      userId: "",
+      notes: [],
+      notesNum: 0
     }
   } 
 
@@ -41,9 +43,34 @@ class App extends Component<{}, MyState> {
       if (FBUser){        
         this.setState({
           user: FBUser,
-          displayName: FBUser.displayName,
           userId: FBUser.uid,
         });
+
+        const notesRef = firebase.database().ref('notes/' + FBUser.uid);
+
+        notesRef.on('value', snapshot => {
+          let notes = snapshot.val();
+          let notesList = [];
+
+          for(let index in notes){
+            notesList.push({
+              noteID: index,
+              title: notes[index].title,
+              text: notes[index].text
+            })
+          }          
+
+          this.setState({
+            notes: notesList,
+            notesNum: notesList.length
+          })
+        });
+
+
+      }else{
+        this.setState({
+          user: null
+        })
       }
     });
   }
@@ -56,7 +83,6 @@ class App extends Component<{}, MyState> {
       }).then(() => {        
         this.setState({
           user: FBUser,
-          displayName: FBUser.displayName,
           userId: FBUser.uid
         });
         history.push("/");
@@ -68,7 +94,6 @@ class App extends Component<{}, MyState> {
     e.preventDefault();
     this.setState({
       user: null,
-      displayName: "",
       userId: ""
     });
 
@@ -77,8 +102,19 @@ class App extends Component<{}, MyState> {
     })
   }
 
+  addNote = (title: string, text: string) => {
+    const ref = firebase
+    .database()
+    .ref(`notes/${this.state.user.uid}`);
+    ref.push({ title: title, text: text });
+  }
+
   render(){
-    const { displayName } = this.state;
+    const { user, notes } = this.state;
+    let displayName = "";
+    if (user){
+      displayName = user.displayName;
+    }    
 
     return (
       <div className="App">
@@ -86,16 +122,18 @@ class App extends Component<{}, MyState> {
           <div className="Main">
             <AppBar loggedInUser={displayName} logoutUser={this.logoutUser}/>
             <Switch>
-                <Route path="/" render={() => <Home userName={displayName} />} exact/>
-                <Route path="/add-note" render={() => <AddNote  />}/>
-                <Route path="/add-note" />
-                { !this.state.user ? (<>
-                  <Route path="/signin" render={() => <Signin history={history} />} />
-                  <Route path="/reset-pass" component={ResetPass} />
-                  <Route path="/register" render={() => <Register registerUser={this.registerUser} />}/>
-                </>):null }
+              { !user ? (<>
+                <Route path="/" render={() => <Welcome />} exact/>
+                <Route path="/signin" render={() => <Signin history={history} />} />
+                <Route path="/reset-pass" component={ResetPass} />
+                <Route path="/register" render={() => <Register registerUser={this.registerUser} />}/>
+              </>):(<>
+                <Route path="/" render={() => <Home userID={user.uid} notes={notes} />} exact/>
+                <Route path="/add-note" render={() => <AddNote addNote={this.addNote} />}/>
+              </>)
+              }
 
-                <Route component={ NotFound } />
+              <Route component={ NotFound } />
             </Switch>
           </div>
           <Container component="main" maxWidth="sm">

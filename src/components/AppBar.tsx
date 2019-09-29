@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       flexGrow: 1,
     },
+    loggedIn: {
+      flexGrow: 1,
+      color: "#c62828"
+    }
   }),
 );
 
@@ -38,6 +42,7 @@ export default function ButtonAppBar(props: MyProps) {
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                 <MenuIcon />
             </IconButton>
+            <Typography variant="h6" className={classes.title}></Typography>
             <Typography variant="h6" className={classes.title}>
               <Link style={{textDecoration: 'none', color: 'inherit'}} to="/">My-Notes</Link>
             </Typography>
@@ -45,7 +50,10 @@ export default function ButtonAppBar(props: MyProps) {
             {
             props.loggedInUser === "" ? 
             <Button color="inherit"><Link style={{textDecoration: 'none', color: 'inherit'}} to="/signin">Login</Link></Button> :
-            <Button color="inherit" onClick={e => props.logoutUser(e)}>Logout</Button>
+            (<><Typography variant="h6" className={classes.loggedIn}>
+              <div>{props.loggedInUser}</div>
+            </Typography>
+            <Button color="inherit" onClick={e => props.logoutUser(e)}>Logout</Button></>)
             }
         </Toolbar>
       </AppBar>
