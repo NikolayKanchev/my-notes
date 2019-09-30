@@ -21,8 +21,14 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     loggedIn: {
-      flexGrow: 1,
-      color: "#c62828"
+      position: "absolute",
+      marginLeft: "80%",
+      top: "1px",
+      color: "#c62828",
+      backgroundColor: "white",
+      opacity: 0.7,
+      padding: "0 8px 1px 8px",
+      borderRadius: "5px",
     }
   }),
 );
@@ -42,19 +48,17 @@ export default function ButtonAppBar(props: MyProps) {
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                 <MenuIcon />
             </IconButton>
-            <Typography variant="h6" className={classes.title}></Typography>
             <Typography variant="h6" className={classes.title}>
               <Link style={{textDecoration: 'none', color: 'inherit'}} to="/">My-Notes</Link>
             </Typography>
 
-            {
-            props.loggedInUser === "" ? 
-            <Button color="inherit"><Link style={{textDecoration: 'none', color: 'inherit'}} to="/signin">Login</Link></Button> :
-            (<><Typography variant="h6" className={classes.loggedIn}>
-              <div>{props.loggedInUser}</div>
-            </Typography>
-            <Button color="inherit" onClick={e => props.logoutUser(e)}>Logout</Button></>)
-            }
+            {props.loggedInUser === "" ? 
+            (<>
+              <Button color="inherit"><Link style={{textDecoration: 'none', color: 'inherit'}} to="/signin">Login</Link></Button>
+            </>) :(<>
+              <h3 className={classes.loggedIn}>{props.loggedInUser}</h3>
+              <Button color="inherit" onClick={e => props.logoutUser(e)}>Logout</Button>
+            </>)}
         </Toolbar>
       </AppBar>
     </div>

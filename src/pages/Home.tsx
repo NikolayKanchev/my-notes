@@ -23,7 +23,7 @@ const home = (prop:{ userID: string, notes?: Array<{ noteID: string, title: stri
                                 </div>
                             )                               
                         })
-                    ) : null
+                    ) : (<h1 style={{alignSelf: "center", position: "absolute", left: "35%" }}> You don't have any notes yet !</h1>)
                 }
                 <div style={{ visibility: "hidden" }}><Card title={"jdsfdakfjvjadfvnknv"} text={"djkshfkajh;kjfhkjshfkajhskdfjhskfjvhkjdfkFH/KGFHA;KDJFHVKAFJDSFVHBADKFHB/KSFVBFAK/DJSFVBF/KBKJVBAKB"} noteID={"123456"} userID={prop.userID}/></div>
                 </>
